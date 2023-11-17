@@ -4,7 +4,7 @@ from PIL import ImageDraw, ImageFont
 def create_thumbnail(
     thumbnail, font_family, font_size, font_color, width, height, title
 ):
-    font = ImageFont.truetype(font_family + ".ttf", font_size)
+    font = ImageFont.truetype(f"{font_family}.ttf", font_size)
     Xaxis = width - (width * 0.2)  # 20% of the width
     sizeLetterXaxis = font_size * 0.5  # 50% of the font size
     XaxisLetterQty = round(
@@ -20,15 +20,13 @@ def create_thumbnail(
 
     arrayTitle = []
     for word in title.split():
-        if len(arrayTitle) == 0:
+        if not arrayTitle:
             # colocar a primeira palavra no arrayTitl# put the first word in the arrayTitle
             arrayTitle.append(word)
+        elif len(arrayTitle[-1]) + len(word) < XaxisLetterQty:
+            arrayTitle[-1] = f"{arrayTitle[-1]} {word}"
         else:
-            # if the size of arrayTitle is less than qtLetters
-            if len(arrayTitle[-1]) + len(word) < XaxisLetterQty:
-                arrayTitle[-1] = arrayTitle[-1] + " " + word
-            else:
-                arrayTitle.append(word)
+            arrayTitle.append(word)
 
     draw = ImageDraw.Draw(thumbnail)
     # loop for put the title in the thumbnail

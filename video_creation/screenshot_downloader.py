@@ -42,34 +42,27 @@ def get_screenshots_of_reddit_posts(reddit_object: dict, screenshot_num: int):
         )
         bgcolor = (0, 0, 0, 120)
         txtcolor = (240, 240, 240)
-        transparent = True
     elif settings.config["settings"]["theme"] == "transparent":
         if storymode:
             # Transparent theme
             bgcolor = (0, 0, 0, 120)
             txtcolor = (255, 255, 255)
-            transparent = True
-            cookie_file = open(
-                "./video_creation/data/cookie-dark-mode.json", encoding="utf-8"
-            )
         else:
-            # Switch to dark theme
-            cookie_file = open(
-                "./video_creation/data/cookie-dark-mode.json", encoding="utf-8"
-            )
             bgcolor = (0, 0, 0, 0)
             txtcolor = (240, 240, 240)
-            transparent = True
+        cookie_file = open(
+            "./video_creation/data/cookie-dark-mode.json", encoding="utf-8"
+        )
     else:
         cookie_file = open(
             "./video_creation/data/cookie-light-mode.json", encoding="utf-8"
         )
         bgcolor = "#ffffff"
         txtcolor = (0, 0, 0)
-        transparent = True
     if storymode and settings.config["settings"]["storymodemethod"] == 1:
         # for idx,item in enumerate(reddit_object["thread_post"]):
         print_substep("Generating images...")
+        transparent = True
         return imagemaker(
             theme=bgcolor,
             reddit_obj=reddit_object,

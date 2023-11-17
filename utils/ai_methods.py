@@ -26,10 +26,9 @@ def sort_by_similarity(thread_objects, keywords):
     # keywords
     thread_objects = list(thread_objects)
 
-    threads_sentences = []
-    for i, thread in enumerate(thread_objects):
-        threads_sentences.append(" ".join([thread.title, thread.selftext]))
-
+    threads_sentences = [
+        " ".join([thread.title, thread.selftext]) for thread in thread_objects
+    ]
     # Threads inference
     encoded_threads = tokenizer(
         threads_sentences, padding=True, truncation=True, return_tensors="pt"

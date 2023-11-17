@@ -22,7 +22,6 @@ def get_subreddit_threads(POST_ID: str):
 
     print_substep("Logging into Reddit.")
 
-    content = {}
     if settings.config["reddit"]["creds"]["2fa"]:
         print(
             "\nEnter your two-factor authentication code from your authenticator app.\n"
@@ -30,7 +29,7 @@ def get_subreddit_threads(POST_ID: str):
         code = input("> ")
         print()
         pw = settings.config["reddit"]["creds"]["password"]
-        
+
         passkey = f"{pw}:{code}"
     else:
         passkey = settings.config["reddit"]["creds"]["password"]
@@ -112,15 +111,13 @@ def get_subreddit_threads(POST_ID: str):
         if not submission.selftext:
             print_substep("You are trying to use story mode on post with no post text")
             exit()
-        else:
-            # Check for the length of the post text
-            if len(submission.selftext) > (
+        elif len(submission.selftext) > (
                 settings.config["settings"]["storymode_max_length"] or 2000
             ):
-                print_substep(
-                    f"Post is too long ({len(submission.selftext)}), try with a different post. ({settings.config['settings']['storymode_max_length']} character limit)"
-                )
-                exit()
+            print_substep(
+                f"Post is too long ({len(submission.selftext)}), try with a different post. ({settings.config['settings']['storymode_max_length']} character limit)"
+            )
+            exit()
     elif not submission.num_comments:
         print_substep("No comments found. Skipping.")
         exit()
@@ -143,11 +140,13 @@ def get_subreddit_threads(POST_ID: str):
             style="bold blue",
         )
 
-    content["thread_url"] = threadurl
-    content["thread_title"] = submission.title
-    content["thread_id"] = submission.id
-    content["is_nsfw"] = submission.over_18
-    content["comments"] = []
+    content = {
+        "thread_url": threadurl,
+        "thread_title": submission.title,
+        "thread_id": submission.id,
+        "is_nsfw": submission.over_18,
+        "comments": [],
+    }
     if settings.config["settings"]["storymode"]:
         if settings.config["settings"]["storymodemethod"] == 1:
             content["thread_post"] = posttextparser(submission.selftext)

@@ -13,7 +13,7 @@ def get_checks():
     checks = {}
 
     def unpack_checks(obj: dict):
-        for key in obj.keys():
+        for key in obj:
             if "optional" in obj[key].keys():
                 checks[key] = obj[key]
             else:
@@ -26,7 +26,7 @@ def get_checks():
 
 # Get current config (from config.toml) as dict
 def get_config(obj: dict, done={}):
-    for key in obj.keys():
+    for key in obj:
         if not isinstance(obj[key], dict):
             done[key] = obj[key]
         else:
@@ -94,17 +94,14 @@ def check(value, checks):
     ):
         incorrect = True
 
-    if incorrect:
-        return "Error"
-
-    return value
+    return "Error" if incorrect else value
 
 
 # Modify settings (after form is submitted)
 def modify_settings(data: dict, config_load, checks: dict):
     # Modify config settings
     def modify_config(obj: dict, name: str, value: any):
-        for key in obj.keys():
+        for key in obj:
             if name == key:
                 obj[key] = value
             elif not isinstance(obj[key], dict):
@@ -113,10 +110,10 @@ def modify_settings(data: dict, config_load, checks: dict):
                 modify_config(obj[key], name, value)
 
     # Remove empty/incorrect key-value pairs
-    data = {key: value for key, value in data.items() if value and key in checks.keys()}
+    data = {key: value for key, value in data.items() if value and key in checks}
 
     # Validate values
-    for name in data.keys():
+    for name in data:
         value = check(data[name], checks[name])
 
         # Value is invalid
@@ -173,7 +170,7 @@ def add_background(youtube_uri, filename, citation, position):
     youtube_uri = f"https://www.youtube.com/watch?v={regex.group(1)}"
 
     # Check if position is valid
-    if position == "" or position == "center":
+    if position in ["", "center"]:
         position = "center"
 
     elif position.isdecimal():
@@ -210,7 +207,7 @@ def add_background(youtube_uri, filename, citation, position):
     with open("utils/backgrounds.json", "r+", encoding="utf-8") as backgrounds:
         data = json.load(backgrounds)
 
-        data[filename] = [youtube_uri, filename + ".mp4", citation, position]
+        data[filename] = [youtube_uri, f"{filename}.mp4", citation, position]
         backgrounds.seek(0)
         json.dump(data, backgrounds, ensure_ascii=False, indent=4)
 

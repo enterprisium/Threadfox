@@ -121,9 +121,9 @@ class TTSEngine:
                 self.call_tts(f"{idx}-{idy}.part", newtext)
                 with open(f"{self.path}/list.txt", "w") as f:
                     for idz in range(0, len(split_text)):
-                        f.write("file " + f"'{idx}-{idz}.part.mp3'" + "\n")
+                        f.write(f"file '{idx}-{idz}.part.mp3'" + "\n")
                     split_files.append(str(f"{self.path}/{idx}-{idy}.part.mp3"))
-                    f.write("file " + f"'silence.mp3'" + "\n")
+                    f.write(f"file 'silence.mp3'" + "\n")
 
                 os.system(
                     "ffmpeg -f concat -y -hide_banner -loglevel panic -safe 0 "
@@ -136,7 +136,7 @@ class TTSEngine:
             for i in range(0, len(split_files)):
                 os.unlink(split_files[i])
         except FileNotFoundError as e:
-            print("File not found: " + e.filename)
+            print(f"File not found: {e.filename}")
         except OSError:
             print("OSError")
 
