@@ -43,9 +43,7 @@ class ProgressFfmpeg(threading.Thread):
             time.sleep(1)
 
     def get_latest_ms_progress(self):
-        lines = self.output_file.readlines()
-
-        if lines:
+        if lines := self.output_file.readlines():
             for line in lines:
                 if "out_time_ms" in line:
                     out_time_ms = line.split("=")[1]
@@ -71,11 +69,9 @@ def name_normalize(name: str) -> str:
     name = re.sub(r"(\w+)\s?\/\s?(\w+)", r"\1 or \2", name)
     name = re.sub(r"\/", r"", name)
 
-    lang = settings.config["reddit"]["thread"]["post_lang"]
-    if lang:
+    if lang := settings.config["reddit"]["thread"]["post_lang"]:
         print_substep("Translating filename...")
-        translated_name = ts.google(name, to_language=lang)
-        return translated_name
+        return ts.google(name, to_language=lang)
     else:
         return name
 
@@ -128,7 +124,7 @@ def make_final_video(
     background_clip = ffmpeg.input(prepare_background(reddit_id, W=W, H=H))
 
     # Gather all audio clips
-    audio_clips = list()
+    audio_clips = []
     if settings.config["settings"]["storymode"]:
         if settings.config["settings"]["storymodemethod"] == 0:
             audio_clips = [ffmpeg.input(f"assets/temp/{reddit_id}/mp3/title.mp3")]
@@ -179,7 +175,7 @@ def make_final_video(
     screenshot_width = int((W * 45) // 100)
     audio = ffmpeg.input(f"assets/temp/{reddit_id}/audio.mp3")
 
-    image_clips = list()
+    image_clips = []
 
     image_clips.insert(
         0,
@@ -306,10 +302,10 @@ def make_final_video(
     # new_width = 500
     # new_height = 300
     # image = image.resize((new_width, new_height))
-    
-    
-    logo=ffmpeg.input(f"assets/logor.png")
-    
+
+
+    logo = ffmpeg.input("assets/logor.png")
+        
 
     background_clip = background_clip.overlay(
                 logo,
@@ -319,7 +315,7 @@ def make_final_video(
 
 
 
-    
+
 
 
     # background_clip = ffmpeg.drawtext(
@@ -345,7 +341,7 @@ def make_final_video(
 
     path = f"results/{subreddit}/{filename}"
     path = path[:251]
-    path = path + ".mp4"
+    path = f"{path}.mp4"
 
     with ProgressFfmpeg(length, on_update_example) as progress:
         ffmpeg.output(
@@ -370,7 +366,7 @@ def make_final_video(
     pbar.update(100 - old_percentage)
     pbar.close()
 
-    save_data(subreddit, filename + ".mp4", title, idx, background_config[2])
+    save_data(subreddit, f"{filename}.mp4", title, idx, background_config[2])
     print_step("Removing temporary files 🗑")
     cleanups = cleanup(reddit_id)
     print_substep(f"Removed {cleanups} temporary files 🗑")

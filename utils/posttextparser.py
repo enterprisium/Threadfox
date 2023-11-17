@@ -20,12 +20,5 @@ def posttextparser(obj):
 
     doc = nlp(text)
 
-    newtext: list = []
-
-    # to check for space str
-    for line in doc.sents:
-        if sanitize_text(line.text):
-            newtext.append(line.text)
-            # print(line)
-
+    newtext: list = [line.text for line in doc.sents if sanitize_text(line.text)]
     return newtext
